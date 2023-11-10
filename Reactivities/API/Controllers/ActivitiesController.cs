@@ -1,31 +1,46 @@
-﻿using Domain;
+﻿using Application.Activities;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+public class ActivitiesController : BaseApiController
 {
-    public class ActivitiesController:BaseApiController
+    [HttpGet]
+    public async Task<ActionResult<List<Activity>>> GetActivities()
     {
-        private readonly DataContext _dataContext;
+        var activities = await Mediator.Send(new List.Query());
+        return Ok(activities);
+    }
 
-        public ActivitiesController(DataContext dataContext)
-        {
-            _dataContext = dataContext;
-        }
+    [HttpGet("{id}")] //api/activities/121bc2f5-56c4-410d-b19b-dae3938fbc81
+    public async Task<ActionResult<Activity>> GetActivity(Guid id)
+    {
+        return await Mediator.Send(new Details.Query { Id = id });
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities()
-        {
-            var activities = await _dataContext.Activities.ToListAsync();
-            return Ok(activities);
-        }
+    [HttpPost]
+    public async Task<IActionResult> CreateActivity(Activity activity)
+    {
+        await Mediator.Send(new Create.Command { Activity = activity });
+        return Ok();
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
-        {
-            var activity = await  _dataContext.Activities.Where(ac=> ac.Id == id).FirstOrDefaultAsync();
-            return Ok(activity);
-        }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(Guid id, Activity activity)
+    {
+        activity.Id = id;
+
+        await Mediator.Send(new Edit.Command { Activity = activity });
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        await Mediator.Send(new Delete.Command { Id = id });
+
+        return Ok();
     }
 }
