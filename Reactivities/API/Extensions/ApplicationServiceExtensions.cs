@@ -20,6 +20,7 @@ public static class ApplicationServiceExtensions
                 policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"); });
         });
 
+
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(List.Handler).Assembly));
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         return services;
