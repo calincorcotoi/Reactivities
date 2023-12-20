@@ -1,4 +1,3 @@
-import React from "react";
 import { Message, MessageList } from "semantic-ui-react";
 
 interface Props {
