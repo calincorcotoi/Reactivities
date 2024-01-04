@@ -16,8 +16,6 @@ public class Create
         public Activity Activity { get; set; }
     }
 
-    //because the validation is done in auto mode, this class can be deleted ,
-    //but for the sake of the course will remain.
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
