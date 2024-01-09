@@ -5,6 +5,7 @@ using MediatR;
 using Persistence;
 using System.ComponentModel.DataAnnotations;
 using Application.Core;
+using Application.Interfaces;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace Application.Activities;
@@ -27,14 +28,25 @@ public class Create
     public class Handler : IRequestHandler<Command, Result<Unit>>
     {
         private readonly DataContext _context;
+        private readonly IUserAccessor _userAccessor;
 
-        public Handler(DataContext context)
+        public Handler(DataContext context, IUserAccessor userAccessor)
         {
             _context = context;
+            _userAccessor = userAccessor;
         }
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
+            var user = _context.Users.FirstOrDefault(u => u.UserName == _userAccessor.GetUsername());
+
+            _context.ActivityAttendees.Add(new ActivityAttendee()
+            {
+                AppUser = user,
+                Activity = request.Activity,
+                IsHost = true,
+            });
+
             _context.Activities.Add(request.Activity);
 
             var result = await _context.SaveChangesAsync() > 0;

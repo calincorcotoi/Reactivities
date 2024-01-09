@@ -1,8 +1,8 @@
 import { ErrorMessage, Form, Formik } from "formik";
-import MyTextInput from "../../../app/common/form/MyTextInput";
+import MyTextInput from "../../app/common/form/MyTextInput";
 import { Button, Header, Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
-import { store, useStore } from "../../../app/stores/store";
+import { store, useStore } from "../../app/stores/store";
 
 export default observer(function LoginForm() {
   const { userStore } = useStore();
@@ -11,39 +11,20 @@ export default observer(function LoginForm() {
     <Formik
       initialValues={{ email: "", password: "", error: null }}
       onSubmit={(values, { setErrors }) =>
-        userStore
-          .login(values)
-          .catch((error) => setErrors({ error: "Invalid email or password" }))
+        userStore.login(values).catch((error) => setErrors({ error: "Invalid email or password" }))
       }
     >
       {({ handleSubmit, isSubmitting, errors }) => (
         <Form className="ui form" onSubmit={handleSubmit} autoComplete="off">
-          <Header
-            as="h2"
-            content="Login to Reactivities"
-            color="teal"
-            textAlign="center"
-          />
+          <Header as="h2" content="Login to Reactivities" color="teal" textAlign="center" />
 
           <MyTextInput name="email" placeholder="Email" />
           <MyTextInput type="password" name="password" placeholder="Password" />
           <ErrorMessage
             name="error"
-            render={() => (
-              <Label
-                style={{ marginBottom: 10 }}
-                basic
-                color="red"
-                content={errors.error}
-              />
-            )}
+            render={() => <Label style={{ marginBottom: 10 }} basic color="red" content={errors.error} />}
           ></ErrorMessage>
-          <Button
-            loading={isSubmitting}
-            fluid
-            type="submit"
-            disabled={isSubmitting}
-          >
+          <Button loading={isSubmitting} fluid type="submit" disabled={isSubmitting}>
             Submit
           </Button>
         </Form>

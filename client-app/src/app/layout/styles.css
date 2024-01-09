@@ -45,3 +45,7 @@ body {
 .react-datepicker-wrapper {
   width: 100%;
 }
+
+.ui.card {
+  width: 100px;
+}
