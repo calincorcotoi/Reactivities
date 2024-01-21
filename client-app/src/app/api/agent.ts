@@ -1,9 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { Activity, ActivityFormValues } from "../models/activity";
+import { ActivityFormValues, IActivity } from "../models/activity";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { store } from "../stores/store";
 import { User, UserFormValues } from "../models/user";
+import { Photo, Profile, ProfileFormValues } from "../models/profile";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -28,10 +29,7 @@ axios.interceptors.response.use(
     const { data, status, config } = error.response as AxiosResponse;
     switch (status) {
       case 400:
-        if (
-          config.method === "get" &&
-          Object.prototype.hasOwnProperty.call(data.errors, "id")
-        ) {
+        if (config.method === "get" && Object.prototype.hasOwnProperty.call(data.errors, "id")) {
           console.log(data);
           router.navigate("/not-found");
         }
@@ -72,18 +70,15 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 const requests = {
   get: <T>(url: string) => axios.get<T>(url).then(responseBody),
   put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
-  post: <T>(url: string, body: {}) =>
-    axios.post<T>(url, body).then(responseBody),
+  post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
   del: <T>(url: string) => axios.delete<T>(url).then(responseBody),
 };
 
 const Activity = {
-  list: () => requests.get<Activity[]>("/activities"),
-  details: (id: string) => requests.get<Activity>(`/activities/${id}`),
-  create: (activity: ActivityFormValues) =>
-    requests.post<void>("/activities", activity),
-  update: (activity: ActivityFormValues) =>
-    requests.put<void>(`/activities/${activity.id}`, activity),
+  list: () => requests.get<IActivity[]>("/activities"),
+  details: (id: string) => requests.get<IActivity>(`/activities/${id}`),
+  create: (activity: ActivityFormValues) => requests.post<void>("/activities", activity),
+  update: (activity: ActivityFormValues) => requests.put<void>(`/activities/${activity.id}`, activity),
   delete: (id: string) => requests.del<void>(`/activities/${id}`),
   attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {}),
 };
@@ -91,13 +86,26 @@ const Activity = {
 const Account = {
   current: () => requests.get<User>("/account"),
   login: (user: UserFormValues) => requests.post<User>("/account/login", user),
-  register: (user: UserFormValues) =>
-    requests.post<User>("/account/register", user),
+  register: (user: UserFormValues) => requests.post<User>("/account/register", user),
 };
 
+const Profiles = {
+  get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+  update: (newProfile: ProfileFormValues) => requests.put<void>(`/profiles`, newProfile),
+  uploadPhoto: (file: any) => {
+    let formData = new FormData();
+    formData.append("File", file);
+    return axios.post<Photo>("photos", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+  setMainPhoto: (id: string) => axios.post(`/photos/${id}/setMain`, {}),
+  deletePhoto: (id: string) => axios.delete(`/photos/${id}`),
+};
 const agent = {
   Activity,
   Account,
+  Profiles,
 };
 
 export default agent;
