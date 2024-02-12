@@ -29,7 +29,7 @@ public class Details
 
         public async Task<Result<ActivityDto>> Handle(Query request, CancellationToken cancellationToken)
         {
-             var activity = await _context.Activities
+            var activity = await _context.Activities
                  .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
                  .FirstOrDefaultAsync(a => a.Id == request.Id);
 

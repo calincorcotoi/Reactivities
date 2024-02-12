@@ -15,7 +15,7 @@ export default observer(function ProfilePage() {
   useEffect(() => {
     if (username)
       loadProfile(username).then(() => {
-        console.log(profile);
+        // console.log(profile);
       });
   }, [loadProfile, username]);
 

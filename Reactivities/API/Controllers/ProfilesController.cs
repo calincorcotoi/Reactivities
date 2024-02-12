@@ -6,6 +6,13 @@ namespace API.Controllers;
 
 public class ProfilesController : BaseApiController
 {
+    [HttpGet("{username}/activities")]
+    public async Task<IActionResult> GetEvents(string username, string predicate)
+    {
+        var events = await Mediator.Send(new Events.Query { Username = username , Predicate = predicate });
+        return HandlResult(events);
+    }
+
     [HttpGet("{username}")]
     public async Task<IActionResult> GetProfile(string username)
     {
