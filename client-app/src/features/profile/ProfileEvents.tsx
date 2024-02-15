@@ -1,4 +1,4 @@
-import { Tab, TabPane, TabProps } from "semantic-ui-react";
+import { Tab, TabProps } from "semantic-ui-react";
 import Events from "./Events";
 import { useStore } from "../../app/stores/store";
 import { observer } from "mobx-react-lite";
@@ -11,7 +11,7 @@ export default observer(function ProfileEvents() {
   useEffect(() => {
     loadEvents("past");
   });
-  const handleTabChange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, d: TabProps) => {
+  const handleTabChange = (_: React.MouseEvent<HTMLDivElement, MouseEvent>, d: TabProps) => {
     switch (d.activeIndex) {
       case 0:
         loadEvents("past");

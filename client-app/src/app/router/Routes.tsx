@@ -8,19 +8,25 @@ import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
 import LoginForm from "../../features/users/LoginForm";
 import ProfilePage from "../../features/profile/ProfilePage";
+import RequireAuth from "./RequireAuth";
 
 export const routes: RouteObject[] = [
   {
     path: "/",
     element: <App />,
     children: [
-      { path: "activities", element: <ActivityDashboard /> },
-      { path: "activities/:id", element: <ActivityDetails /> },
-      { path: "createActivity", element: <ActivityForm key="create" /> },
-      { path: "manage/:id", element: <ActivityForm key="manage" /> },
-      { path: "errors", element: <TestErrors /> },
-      { path: "login", element: <LoginForm /> },
-      { path: "profile/:username", element: <ProfilePage /> },
+      {
+        element: <RequireAuth />,
+        children: [
+          { path: "activities", element: <ActivityDashboard /> },
+          { path: "activities/:id", element: <ActivityDetails /> },
+          { path: "createActivity", element: <ActivityForm key="create" /> },
+          { path: "manage/:id", element: <ActivityForm key="manage" /> },
+          { path: "errors", element: <TestErrors /> },
+          { path: "login", element: <LoginForm /> },
+          { path: "profile/:username", element: <ProfilePage /> },
+        ],
+      },
       { path: "/not-found", element: <NotFound /> },
       { path: "/server-error", element: <ServerError /> },
       { path: "*", element: <Navigate replace to="/not-found" /> },
