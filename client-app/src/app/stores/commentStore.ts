@@ -26,7 +26,7 @@ export default class CommentStore {
       this.hubConnection.on("LoadComments", (comments: ChatComment[]) => {
         runInAction(() => {
           comments.forEach((c: ChatComment) => {
-            c.createdAt = new Date(c.createdAt + "Z");
+            c.createdAt = new Date(c.createdAt);
           });
 
           this.comments = comments;
